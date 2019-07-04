@@ -18,7 +18,7 @@ from multiprocessing import Process
 import nidaqmx
 from nidaqmx.constants import AcquisitionType
 
-form_class = uic.loadUiType("TEST.ui")[0] #qt Designer파일 불러오기
+form_class = uic.loadUiType("TEST.ui")[0] #qt Designer files
 ex=uic.loadUiType("Explain.ui")[0]
 Setting=uic.loadUiType("Setting.ui")[0]
 
@@ -50,7 +50,7 @@ class Extra(QWidget,ex):
         self.Select.setText("Select_Level:%d"%Select)
         self.Rank.setText("상위 Rank 개수:%d"%Rank)
 
-class MyWindow(QMainWindow, form_class):#불러온 qt designer와 qmainwindow 상속
+class MyWindow(QMainWindow, form_class):#qt designer
     def __init__(self):
         super().__init__()#부모Class에서 상속값 가져오기
         self.setupUi(self)#부모객체에서 setupUi 실행 (위젯들 모음)
