@@ -18,7 +18,7 @@ from multiprocessing import Process
 import nidaqmx
 from nidaqmx.constants import AcquisitionType
 
-form_class = uic.loadUiType("Monitoring.ui")[0] # qt Designer파일 불러오기
+form_class = uic.loadUiType("./ui_models/Monitoring.ui")[0] # qt Designer파일 불러오기
 
 class Thread(QThread):
     signal = pyqtSignal(name = "tic")
@@ -138,9 +138,9 @@ class MyWindow(QMainWindow, form_class):#불러온 qt designer와 qmainwindow �
                     FeatureRank=i
                     break
             k=CT.MakingFeature(Number_of_Data,Number_of_Sensor,wavelet,Select,Rank,Level)
-            with open('Select.pickle','rb') as f: # 기존에 데이터를 P-value값으로 오름차순 해놓은 Select을 가져옴
+            with open('.ref/Select.pickle','rb') as f: # 기존에 데이터를 P-value값으로 오름차순 해놓은 Select을 가져옴
                 select=pickle.load(f)
-            with open('FT.pickle','rb') as f:
+            with open('.ref/FT.pickle','rb') as f:
                 FT=pickle.load(f)
             Normal = FT[0, :, :]
             AbNormal = FT[1, :, :]

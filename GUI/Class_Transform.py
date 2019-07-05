@@ -77,14 +77,14 @@ class MakingFeature():
     #Time Domain과 Frequency Domain 특성값 합치기
     
     #p-value 기반 상위 특징요소 선택하기
-        with open('Select.pickle','rb') as f:#기존에 데이터를 P-value값으로 오름차순 해놓은 Select을 가져옴
+        with open('./ref/Select.pickle','rb') as f:#기존에 데이터를 P-value값으로 오름차순 해놓은 Select을 가져옴
             Select=pickle.load(f)
         New_Feature=np.zeros(shape=(self.Rank))
         for i in np.arange(self.Rank):
             New_Feature[i]=np.array(FT[int(Select[i,1])])
         return New_Feature,a
     def Finding(self, x):
-        with open('Select.pickle','rb') as f:#기존에 데이터를 P-value값으로 오름차순 해놓은 Select을 가져옴
+        with open('./ref/Select.pickle','rb') as f:#기존에 데이터를 P-value값으로 오름차순 해놓은 Select을 가져옴
             self.Select=pickle.load(f)
         Feature_Order = self.Select[x, 1]
         a=Feature_Order%self.Number_of_Feature
@@ -203,7 +203,7 @@ class Training():
 
         # 데이터 저장 불러오기
 
-        with open('FT.pickle', 'wb') as f:
+        with open('./ref/FT.pickle', 'wb') as f:
             pickle.dump(FT, f, pickle.HIGHEST_PROTOCOL)
 
         b = np.zeros(shape=(self.Number_of_Sensor * self.Number_of_Feature * (self.Select + 1), 2))
@@ -225,9 +225,9 @@ class Training():
             delay=delay+(i/Rank*10)
             pBar.setValue(delay)
             time.sleep(0.005)
-        with open('New_Feature.pickle', 'wb') as f:
+        with open('./ref/New_Feature.pickle', 'wb') as f:
             pickle.dump(New_Feature, f, pickle.HIGHEST_PROTOCOL)
-        with open('Select.pickle', 'wb') as f:
+        with open('./ref/Select.pickle', 'wb') as f:
             pickle.dump(b, f, pickle.HIGHEST_PROTOCOL)
 
         # Target, Train 벡터 생성
@@ -241,17 +241,17 @@ class Training():
         # PNN 모델 생성 및 저장
         pnn = algorithms.PNN(std=10, verbose=False)
         pnn.train(Train, Total_target)
-        with open('PNN_Model.pickle', 'wb') as f:
+        with open('./ref/PNN_Model.pickle', 'wb') as f:
             pickle.dump(pnn, f, pickle.HIGHEST_PROTOCOL)
         # KNN 모델 생성 및 저장
         knn = KNeighborsClassifier()
         knn.fit(Train, Total_target)
-        with open('KNN_Model.pickle', 'wb') as f:
+        with open('./ref/KNN_Model.pickle', 'wb') as f:
             pickle.dump(knn, f, pickle.HIGHEST_PROTOCOL)
         # SVM 모델 생성 및 저장
         clf = svm.SVC()
         clf.fit(Train, Total_target)
-        with open('SVM_Model.pickle', 'wb') as f:
+        with open('./ref/SVM_Model.pickle', 'wb') as f:
             pickle.dump(clf, f, pickle.HIGHEST_PROTOCOL)
 
         pBar.setValue(100)

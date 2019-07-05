@@ -18,9 +18,9 @@ from multiprocessing import Process
 import nidaqmx
 from nidaqmx.constants import AcquisitionType
 
-form_class = uic.loadUiType("TEST.ui")[0] #qt Designer files
-ex=uic.loadUiType("Explain.ui")[0]
-Setting=uic.loadUiType("Setting.ui")[0]
+form_class = uic.loadUiType("./ui_models/TEST.ui")[0] #qt Designer files
+ex=uic.loadUiType("./ui_models/Explain.ui")[0]
+Setting=uic.loadUiType("./ui_models/Setting.ui")[0]
 
 class Set(QMainWindow,Setting):
     def __init__(self,parent=None):
@@ -68,7 +68,7 @@ class MyWindow(QMainWindow, form_class):#qt designer
         self.push.clicked.connect(self.Train)
 
         #로고 넣기
-        picture = QPixmap("./image.PNG")
+        picture = QPixmap("./ref/image.PNG")
         scale = picture.scaled(307,281,Qt.KeepAspectRatio)
         self.Image.setPixmap(scale)
         #P-value comboBox에 Item 추가
@@ -218,7 +218,7 @@ class MyWindow(QMainWindow, form_class):#qt designer
                 self.NewFeature, self.data = a.Transform(mytext)#Rank 에 적합한 Feature와 그래프 그리기 위해 원본 Data 선언
                 Mode = str(self.Model.currentText())
                 print(Mode)
-                with open(Mode+'.pickle', 'rb') as f:
+                with open('./ref/' + Mode + '.pickle', 'rb') as f:
                     Selected_Model = pickle.load(f)
                 NewFeature = np.transpose(self.NewFeature)
                 Predicted = Selected_Model.predict([NewFeature])
@@ -238,9 +238,9 @@ class MyWindow(QMainWindow, form_class):#qt designer
                     FeatureRank=i
                     break
             k=CT.MakingFeature(Number_of_Data,Number_of_Sensor,wavelet,Select,Rank,Level)
-            with open('Select.pickle','rb') as f:#기존에 데이터를 P-value값으로 오름차순 해놓은 Select을 가져옴
+            with open('./ref/Select.pickle','rb') as f:#기존에 데이터를 P-value값으로 오름차순 해놓은 Select을 가져옴
                 select=pickle.load(f)
-            with open('FT.pickle','rb') as f:
+            with open('./ref/FT.pickle','rb') as f:
                 FT=pickle.load(f)
             Normal = FT[0, :, :]
             AbNormal = FT[1, :, :]
