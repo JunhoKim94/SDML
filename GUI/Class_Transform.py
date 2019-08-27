@@ -14,6 +14,7 @@ from sklearn import svm,metrics
 from sklearn.neighbors import KNeighborsClassifier
 import time
 #INPUT
+'''
 Number_of_Data=100
 Number_of_Sensor=2
 Number_of_Feature=9
@@ -23,9 +24,10 @@ Level=12
 select=9
 
 Rank = 10
+'''
 
 class MakingFeature():
-    def __init__(self,Number_of_Data,Number_of_Sensor,MotherWavelet,Select,Rank,Level):
+    def __init__(self, Number_of_Data = 100, Number_of_Sensor = 2, MotherWavelet = "sym2", Select = 9, Rank = 10, Level = 12):
         self.Number_of_Data = Number_of_Data
         self.Number_of_Sensor=Number_of_Sensor
         self.MotherWavelet = MotherWavelet
@@ -33,50 +35,57 @@ class MakingFeature():
         self.Rank = Rank
         self.Level = Level
         self.Number_of_Feature=9
+
     def rms(self,y): #rms 함수 정의
         return np.sqrt(np.mean(y**2)) 
-    #Time Domain Feature 추출    
+
+        
     def Transform(self,x):
+        #Time Domain Feature 추출
         TD_Normal = np.zeros(shape=(self.Number_of_Sensor*self.Number_of_Feature))
         path2 = x
         data2 = pd.read_csv(path2)
         a=np.array(data2,dtype=np.float32)
         for j in np.arange(0,self.Number_of_Sensor):
-            TD_Normal[self.Number_of_Feature*j+0]=np.max(a[:,j])
-            TD_Normal[self.Number_of_Feature*j+1]=np.min(a[:,j])
-            TD_Normal[self.Number_of_Feature*j+2]=np.mean(a[:,j])
-            TD_Normal[self.Number_of_Feature*j+3]=np.var(a[:,j])
-            TD_Normal[self.Number_of_Feature*j+4]=self.rms(a[:,j])
-            TD_Normal[self.Number_of_Feature*j+5]=sp.skew(a[:,j])
-            TD_Normal[self.Number_of_Feature*j+6]=sp.kurtosis(a[:,j])
-            TD_Normal[self.Number_of_Feature*j+7]=self.rms(a[:,j])/np.mean(a[:,j])
-            TD_Normal[self.Number_of_Feature*j+8]=np.max(a[:,j])/np.mean(a[:,j])
+            TD_Normal[self.Number_of_Feature*j+0] = np.max(a[:,j])
+            TD_Normal[self.Number_of_Feature*j+1] = np.min(a[:,j])
+            TD_Normal[self.Number_of_Feature*j+2] = np.mean(a[:,j])
+            TD_Normal[self.Number_of_Feature*j+3] = np.var(a[:,j])
+            TD_Normal[self.Number_of_Feature*j+4] = self.rms(a[:,j])
+            TD_Normal[self.Number_of_Feature*j+5] = sp.skew(a[:,j])
+            TD_Normal[self.Number_of_Feature*j+6] = sp.kurtosis(a[:,j])
+            TD_Normal[self.Number_of_Feature*j+7] = self.rms(a[:,j])/np.mean(a[:,j])
+            TD_Normal[self.Number_of_Feature*j+8] = np.max(a[:,j])/np.mean(a[:,j])
             #Normal[10*j+9,j]=rms(a[:,j])    
-    #Frequency Domain Feature 추출
+
+        #Frequency Domain Feature 추출
         FD_Normal = np.zeros(shape=(self.Number_of_Sensor*self.Number_of_Feature*self.Select))
         path2 = x
         data2 = pd.read_csv(path2)
         b=np.array(data2,dtype=np.float32)
+
         # Mother Wavelet 및 level 설정
         wavelet = pywt.Wavelet(self.MotherWavelet)
         Coef2=pywt.wavedec(b,wavelet,level=self.Level,axis=0)#Wavelet Transform Coefficient
+
         for j in np.arange(self.Number_of_Sensor):
             for k in np.arange(self.Select):
                 coef2=Coef2[self.Level-k]
-                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+0]=np.max(coef2[:,j])
-                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+1]=np.min(coef2[:,j])
-                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+2]=np.mean(coef2[:,j])
-                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+3]=np.var(coef2[:,j])
-                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+4]=self.rms(coef2[:,j])
-                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+5]=sp.skew(coef2[:,j])
-                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+6]=sp.kurtosis(coef2[:,j])
-                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+7]=self.rms(coef2[:,j])/np.mean(coef2[:,j])
-                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+8]=np.max(coef2[:,j])/np.mean(coef2[:,j])
-    
+                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+0] = np.max(coef2[:,j])
+                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+1] = np.min(coef2[:,j])
+                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+2] = np.mean(coef2[:,j])
+                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+3] = np.var(coef2[:,j])
+                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+4] = self.rms(coef2[:,j])
+                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+5] = sp.skew(coef2[:,j])
+                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+6] = sp.kurtosis(coef2[:,j])
+                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+7] = self.rms(coef2[:,j])/np.mean(coef2[:,j])
+                FD_Normal[self.Number_of_Feature*j*self.Select+k*self.Number_of_Feature+8] = np.max(coef2[:,j])/np.mean(coef2[:,j])
+        
+        #Time Domain과 Frequency Domain 특성값 합치기
         FT=np.concatenate((TD_Normal,FD_Normal),axis=0)
-    #Time Domain과 Frequency Domain 특성값 합치기
     
-    #p-value 기반 상위 특징요소 선택하기
+    
+        #p-value 기반 상위 특징요소 선택하기
         with open('./ref/Select.pickle','rb') as f:#기존에 데이터를 P-value값으로 오름차순 해놓은 Select을 가져옴
             Select=pickle.load(f)
         New_Feature=np.zeros(shape=(self.Rank))
@@ -97,7 +106,7 @@ class MakingFeature():
         return 'Feature=%s, Sensor=%s, %s'%(Feature,Sensor,Level)
 #######################################################################################################################################
 class Training():
-    def __init__(self,Number_of_Data,Number_of_Sensor,MotherWavelet,Select,Rank,Level):
+    def __init__(self, Number_of_Data = 100, Number_of_Sensor = 2, MotherWavelet = "sym2", Select = 9, Rank = 10, Level = 12):
         self.Number_of_Data = Number_of_Data
         self.Number_of_Sensor=Number_of_Sensor
         self.MotherWavelet = MotherWavelet
